@@ -3,7 +3,10 @@ DROP TABLE driving_time_log;
 DROP TABLE driving_route_log;
 DROP TABLE roster;
 DROP TABLE employee cascade constraints;
-
+DROP TABLE zone cascade constraints;
+DROP TABLE zone_suburbs;
+DROP TABLE stop;
+DROP TABLE serviced_by;
 
 CREATE TABLE employee
   (Employee_ID        INT PRIMARY KEY,
@@ -114,5 +117,23 @@ ALTER TABLE customer ADD FOREIGN KEY (card_number) REFERENCES bee_card (card_num
 ALTER TABLE bee_card ADD FOREIGN KEY (customer_email) REFERENCES customer (customer_email) ON DELETE CASCADE;
 ALTER TABLE trip ADD FOREIGN KEY (card_number) REFERENCES bee_card (card_number) ON DELETE CASCADE;
 ALTER TABLE trip ADD FOREIGN KEY (employee_id) REFERENCES employee (Employee_ID) ON DELETE CASCADE;
+
+
+-- Zone (modeled by Alysha)
+CREATE TABLE zone (
+  zone_number INT PRIMARY KEY,
+  card_price  DECIMAL(4,2) NOT NULL,
+  cash_price  DECIMAL(4,2) NOT NULL,
+  zone_colour VARCHAR(10) NOT NULL UNIQUE
+);
+
+INSERT INTO zone VALUES (1, 1.60, 2.20, 'Blue');
+INSERT INTO zone VALUES (2, 2.50, 3.10, 'Yellow');
+INSERT INTO zone VALUES (3, 3.80, 4.50, 'Red'); 
+
+
+-- Zone Suburbs (modeled by Alysha)
+-- Stop (modeled by Alysha)
+-- Serviced By (modeled by Alysha)
 
 COMMIT;
