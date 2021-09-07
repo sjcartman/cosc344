@@ -131,8 +131,26 @@ INSERT INTO zone VALUES (1, 1.60, 2.20, 'Blue');
 INSERT INTO zone VALUES (2, 2.50, 3.10, 'Yellow');
 INSERT INTO zone VALUES (3, 3.80, 4.50, 'Red'); 
 
-
 -- Zone Suburbs (modeled by Alysha)
+CREATE TABLE zone_suburbs (
+  Z_Number INT REFERENCES zone(zone_number),
+  Z_Suburb VARCHAR(20),
+  PRIMARY KEY(Z_Number, Z_suburb)
+);
+
+INSERT INTO zone_suburbs VALUES (1, 'Centre City');
+INSERT INTO zone_suburbs VALUES (1, 'North Dunedin');
+INSERT INTO zone_suburbs VALUES (1, 'Roslyn');
+INSERT INTO zone_suburbs VALUES (2, 'South Dunedin');
+INSERT INTO zone_suburbs VALUES (2, 'North East Valley');
+INSERT INTO zone_suburbs VALUES (2, 'Dalmore');
+INSERT INTO zone_suburbs VALUES (2, 'Kaikorai');
+INSERT INTO zone_suburbs VALUES (2, 'Caversham');
+INSERT INTO zone_suburbs VALUES (2, 'ST Kila');
+INSERT INTO zone_suburbs VALUES (3, 'Wakari');
+INSERT INTO zone_suburbs VALUES (3, 'Andersons Bay');
+INSERT INTO zone_suburbs VALUES (3, 'Normanby');
+
 -- Stop (modeled by Alysha)
 -- Serviced By (modeled by Alysha)
 
