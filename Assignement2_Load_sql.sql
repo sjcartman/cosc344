@@ -77,10 +77,10 @@ INSERT INTO roster VALUES (11234, 'Evening', 'Fri');
 DROP TABLE customer CASCADE CONSTRAINTS;
 CREATE TABLE customer (
   customer_email VARCHAR (320) PRIMARY KEY, -- email addresses can be up to 320 characters long
-  full_name VARCHAR (4000),                 -- names can be any length
-  address VARCHAR (4000),
-  birthdate DATE,
-  card_number CHAR (9) UNIQUE -- NOTE: add reference later
+  full_name VARCHAR (4000) NOT NULL,                 -- names can be any length
+  address VARCHAR (4000) NOT NULL,
+  birthdate DATE NOT NULL,
+  card_number CHAR (9) UNIQUE -- can be null if the customer has signed up and not purchased a card yet -- NOTE: add reference later
 );
 
 -- Bee card (modeled by Cadence)
