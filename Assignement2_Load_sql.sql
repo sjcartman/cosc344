@@ -5,7 +5,7 @@ DROP TABLE roster;
 DROP TABLE employee cascade constraints;
 DROP TABLE zone cascade constraints;
 DROP TABLE zone_suburbs;
-DROP TABLE stop;
+DROP TABLE stop cascade constraints;
 DROP TABLE serviced_by;
 
 CREATE TABLE employee
@@ -143,15 +143,36 @@ INSERT INTO zone_suburbs VALUES (1, 'North Dunedin');
 INSERT INTO zone_suburbs VALUES (1, 'Roslyn');
 INSERT INTO zone_suburbs VALUES (2, 'South Dunedin');
 INSERT INTO zone_suburbs VALUES (2, 'North East Valley');
-INSERT INTO zone_suburbs VALUES (2, 'Dalmore');
+INSERT INTO zone_suburbs VALUES (2, 'Pine Hill');
 INSERT INTO zone_suburbs VALUES (2, 'Kaikorai');
 INSERT INTO zone_suburbs VALUES (2, 'Caversham');
-INSERT INTO zone_suburbs VALUES (2, 'ST Kila');
+INSERT INTO zone_suburbs VALUES (2, 'St Kila');
 INSERT INTO zone_suburbs VALUES (3, 'Wakari');
 INSERT INTO zone_suburbs VALUES (3, 'Andersons Bay');
 INSERT INTO zone_suburbs VALUES (3, 'Normanby');
 
 -- Stop (modeled by Alysha)
+CREATE TABLE stop (
+  stop_number 	INT PRIMARY KEY,
+  address 	varchar(20) NOT NULL,
+  shelter 	varchar(1) NOT NULL CHECK(shelter in('y','n')), --No boolean type
+  bench 	varchar(1) NOT NULL CHECK(bench in('y','n')),
+  Z_Number	INT REFERENCES zone(zone_number) NOT NULL
+);
+
+INSERT INTO stop VALUES (198, 'Pine Hill Road', 'y', 'y', 2);
+INSERT INTO stop VALUES (17, 'North Rd', 'n', 'n', 2);
+INSERT INTO stop VALUES (226, 'South Rd', 'n', 'n', 2);
+INSERT INTO stop VALUES (319, 'Hillside Rd', 'n', 'y', 2);
+INSERT INTO stop VALUES (20, 'King Edward St', 'y', 'n', 2);
+INSERT INTO stop VALUES (138, 'Princes St', 'n', 'y', 1);
+INSERT INTO stop VALUES (314, 'George St', 'y', 'y', 1);
+INSERT INTO stop VALUES (594, 'Cumberland St', 'y', 'n', 1);
+INSERT INTO stop VALUES (145, 'Tahuna Rd', 'y', 'n', 3);
+INSERT INTO stop VALUES (3, 'Greenhill Ave', 'y', 'n', 3);
+INSERT INTO stop VALUES (37, 'Chapman St', 'n', 'y', 3);
+INSERT INTO stop VALUES (73, 'Highcliff Rd', 'n', 'y', 3);
+
 -- Serviced By (modeled by Alysha)
 
 COMMIT;
