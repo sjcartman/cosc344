@@ -174,5 +174,13 @@ INSERT INTO stop VALUES (37, 'Chapman St', 'n', 'y', 3);
 INSERT INTO stop VALUES (73, 'Highcliff Rd', 'n', 'y', 3);
 
 -- Serviced By (modeled by Alysha)
+CREATE TABLE serviced_by (
+  S_Number 	INT NOT NULL REFERENCES stop(stop_number),
+  --R_Number	INT NOT NULL TODO: References route number
+  time		VARCHAR(5) NOT NULL --No datatype for just time, dont need date as the times are the same every day
+);
+
+INSERT INTO serviced_by VALUES (198, '10:00');
+INSERT INTO serviced_by VALUES (3, '16:30');
 
 COMMIT;
