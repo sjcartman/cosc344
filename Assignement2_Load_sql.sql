@@ -190,36 +190,37 @@ CREATE TABLE serviced_by (
 INSERT INTO serviced_by VALUES (198, '10:00');
 INSERT INTO serviced_by VALUES (3, '16:30');
 
+--BUS modeled by Sean
 CREATE TABLE bus_make
 (
-    Model_number VARCHAR(16) PRIMARY KEY,
-    Capacity NUMBER(2) NOT NULL,
-    Safety_rating NUMERIC(2,1) NOT NULL,
-    Make VARCHAR(64) NOT NULL,
-    Brand VARCHAR(64) NOT NULL
+    Model_ID CHAR(12) PRIMARY KEY, --char 12 is used, as well assume this bus a 12 digit long number to identify it
+    Capacity DECIMAL(2) NOT NULL CHECK (Capacity > 0), -- the Capacity of the bus will never be negative
+    Safety_rating VARCHAR(3) NOT NULL, -- the saftey rating will be a number between 5 and 0, with one dp. because calcuations will never be used, varchar is best 
+    Make VARCHAR(64) NOT NULL, -- the make of the bus
+    Brand VARCHAR(64) NOT NULL -- the brand of the bus
 );
 
-INSERT INTO bus_make VALUES ('x123123sa',99,1.1,'big bus','ford');
-INSERT INTO bus_make VALUES ('x12sasd3123sa',45,1.1,'small bus','holden');
+INSERT INTO bus_make VALUES ('124816321133',99,1.1,'big bus','ford');
+INSERT INTO bus_make VALUES ('222211113333',45,1.1,'small bus','holden');
 CREATE TABLE bus
 (
-    Number_plate VARCHAR(6) PRIMARY KEY,
-    Fuel_costs NUMERIC(8,2),
-    Repair_costs NUMERIC(8,2),
-    Model_number VARCHAR(16) NOT NULL,
-    CONSTRAINT fk_model FOREIGN KEY(Model_number)
-    REFERENCES bus_make(Model_number)
+    Number_plate VARCHAR(6) PRIMARY KEY,--Number plate has not fixed lenght and a max of 6 charaters
+    Fuel_costs DECIMAL(8,2) CHECK (Fuel_costs > 0) NOT NULL, -- can't be negative. costs could pile up so large upper bound is set
+    Repair_costs DECIMAL(8,2) CHECK (Repair_costs > 0) NOT NULL, -- can't be negative. costs could pile up so large upper bound is set
+    Model_ID CHAR(12) NOT NULL,-- keep info on what model the bus is 
+    CONSTRAINT fk_model FOREIGN KEY(Model_ID)
+    REFERENCES bus_make(Model_ID)
 );
 
-INSERT INTO bus VALUES ('xxxsss',100.51,1000,'x12sasd3123sa');
-INSERT INTO bus VALUES ('aaasss',105.51,10200,'x12sasd3123sa');
-INSERT INTO bus VALUES ('xxsss',100.51,1000,'x12sasd3123sa');
-INSERT INTO bus VALUES ('aasss',105.51,10200,'x12sasd3123sa');
+INSERT INTO bus VALUES ('xxxsss',100.51,1000,'222211113333');
+INSERT INTO bus VALUES ('aaasss',105.51,10200,'222211113333');
+INSERT INTO bus VALUES ('xxsss',100.51,1000,'124816321133');
+INSERT INTO bus VALUES ('aasss',105.51,10200,'124816321133');
 
 CREATE TABLE Condition
 (
-    Number_plate VARCHAR(6) PRIMARY KEY,
-    Wheels VARCHAR(5) CHECK( Wheels IN ('good','ok','bad')),
+    Number_plate VARCHAR(6) PRIMARY KEY, -- is a composite attribute of bus
+    Wheels VARCHAR(5) CHECK( Wheels IN ('good','ok','bad')),-- all conditons are limtied to there 3 groups
     Bus_body VARCHAR(5) CHECK( Bus_body IN ('good','ok','bad')),
     Transmission VARCHAR(5) CHECK( Transmission IN ('good','ok','bad')),
     Engine VARCHAR(5) CHECK( Engine IN ('good','ok','bad')),
@@ -231,10 +232,10 @@ INSERT INTO Condition VALUES ('aaasss','bad','bad','good','bad');
 INSERT INTO Condition VALUES ('xxsss','good','bad','ok','bad');
 INSERT INTO Condition VALUES ('aasss','ok','bad','good','bad');
 
-CREATE TABLE REGO
+CREATE TABLE REGO-- is a composite attribute of bus
 (
     Number_plate VARCHAR(6) UNIQUE NOT NULL ,
-    ID VARCHAR(16) UNIQUE NOT NULL,
+    ID CHAR(8) UNIQUE NOT NULL,
     Due DATE NOT NULL,
     DONE DATE NOT NULL,
     CONSTRAINT pk_rego PRIMARY KEY(Number_plate,ID),
@@ -242,15 +243,15 @@ CREATE TABLE REGO
     REFERENCES bus(Number_plate)
 );
 
-INSERT INTO REGO VALUES ('xxxsss','12',TO_DATE('31-12-2022','DD-MM-YYYY'),TO_DATE('16-9-2015','DD-MM-YYYY'));
-INSERT INTO REGO VALUES ('aaasss','14',TO_DATE('30-12-2023','DD-MM-YYYY'),TO_DATE('14-7-2016','DD-MM-YYYY'));
-INSERT INTO REGO VALUES ('xxsss','32',TO_DATE('29-12-2024','DD-MM-YYYY'),TO_DATE('5-12-2017','DD-MM-YYYY'));
-INSERT INTO REGO VALUES ('aasss','64',TO_DATE('28-12-2025','DD-MM-YYYY'),TO_DATE('31-3-2018','DD-MM-YYYY'));
+INSERT INTO REGO VALUES ('xxxsss','77778888',TO_DATE('31-12-2022','DD-MM-YYYY'),TO_DATE('16-9-2015','DD-MM-YYYY'));
+INSERT INTO REGO VALUES ('aaasss','99994444',TO_DATE('30-12-2023','DD-MM-YYYY'),TO_DATE('14-7-2016','DD-MM-YYYY'));
+INSERT INTO REGO VALUES ('xxsss','22222222',TO_DATE('29-12-2024','DD-MM-YYYY'),TO_DATE('5-12-2017','DD-MM-YYYY'));
+INSERT INTO REGO VALUES ('aasss','66677722',TO_DATE('28-12-2025','DD-MM-YYYY'),TO_DATE('31-3-2018','DD-MM-YYYY'));
 
-CREATE TABLE WOF
+CREATE TABLE WOF-- is a composite attribute of bus
 (
     Number_plate VARCHAR(6),
-    ID VARCHAR(16) UNIQUE NOT NULL,
+    ID CHAR(8) UNIQUE NOT NULL,
     Due DATE NOT NULL,
     DONE DATE NOT NULL,
     CONSTRAINT pk_wof PRIMARY KEY(Number_plate,ID),
@@ -258,10 +259,10 @@ CREATE TABLE WOF
     REFERENCES bus(Number_plate)
 );
 
-INSERT INTO WOF VALUES ('xxxsss','123',TO_DATE('31-12-2022','DD-MM-YYYY'),TO_DATE('16-9-2015','DD-MM-YYYY'));
-INSERT INTO WOF VALUES ('aaasss','123123',TO_DATE('30-12-2023','DD-MM-YYYY'),TO_DATE('14-7-2016','DD-MM-YYYY'));
-INSERT INTO WOF VALUES ('xxsss','32123',TO_DATE('29-12-2024','DD-MM-YYYY'),TO_DATE('5-12-2017','DD-MM-YYYY'));
-INSERT INTO WOF VALUES ('aasss','12312364',TO_DATE('28-12-2025','DD-MM-YYYY'),TO_DATE('30-4-2018','DD-MM-YYYY'));
+INSERT INTO WOF VALUES ('xxxsss','44442222',TO_DATE('31-12-2022','DD-MM-YYYY'),TO_DATE('16-9-2015','DD-MM-YYYY'));
+INSERT INTO WOF VALUES ('aaasss','33333333',TO_DATE('30-12-2023','DD-MM-YYYY'),TO_DATE('14-7-2016','DD-MM-YYYY'));
+INSERT INTO WOF VALUES ('xxsss','12345678',TO_DATE('29-12-2024','DD-MM-YYYY'),TO_DATE('5-12-2017','DD-MM-YYYY'));
+INSERT INTO WOF VALUES ('aasss','99922211',TO_DATE('28-12-2025','DD-MM-YYYY'),TO_DATE('30-4-2018','DD-MM-YYYY'));
 
 Create TABLE ROUTE
 (
