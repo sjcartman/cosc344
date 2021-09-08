@@ -180,16 +180,6 @@ INSERT INTO stop VALUES (3, 'Greenhill Ave', 'y', 'n', 3);
 INSERT INTO stop VALUES (37, 'Chapman St', 'n', 'y', 3);
 INSERT INTO stop VALUES (73, 'Highcliff Rd', 'n', 'y', 3);
 
--- Serviced By (modeled by Alysha)
-CREATE TABLE serviced_by (
-  S_Number 	INT NOT NULL REFERENCES stop(stop_number),
-  --R_Number	INT NOT NULL TODO: References route number
-  time		VARCHAR(5) NOT NULL --No datatype for just time, dont need date as the times are the same every day
-);
-
-INSERT INTO serviced_by VALUES (198, '10:00');
-INSERT INTO serviced_by VALUES (3, '16:30');
-
 CREATE TABLE bus_make
 (
     Model_number VARCHAR(16) PRIMARY KEY,
@@ -271,4 +261,21 @@ Create TABLE ROUTE
 
 INSERT INTO route VALUES('1','red');
 INSERT INTO route VALUES('2','blue');
+
+-- Serviced By (modeled by Alysha)
+CREATE TABLE serviced_by (
+  S_Number      INT NOT NULL REFERENCES stop(stop_number),
+  R_Number      VARCHAR(2) NOT NULL REFERENCES ROUTE(Route_number),
+  time          VARCHAR(5) NOT NULL, --No datatype for just time, dont need date as the times are the same every day
+  PRIMARY KEY(S_Number, R_Number)
+);
+
+INSERT INTO serviced_by VALUES (198, '1', '10:00');
+INSERT INTO serviced_by VALUES (20, '1', '10:10');
+INSERT IntO serviced_by VALUES (314, '1', '10:19');
+INSERT INTO serviced_by VALUES (73, '2', '16:30');
+INSERT INTO serviced_by VALUES (37, '2', '16:38');
+INSERT INTO serviced_by VALUES (3, '2', '16:45');
+INSERT INTO serviced_by VALUES (314, '2', '17:00');
+
 COMMIT;
