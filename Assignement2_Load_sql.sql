@@ -7,28 +7,13 @@ DROP TABLE zone cascade constraints;
 DROP TABLE zone_suburbs;
 DROP TABLE stop cascade constraints;
 DROP TABLE serviced_by;
+DROP TABLE REGO;
+DROP TABLE WOF;
+DROP TABLE condition;
+DROP TABLE bus;
+DROP TABLE bus_make;
 
 --Table:
-CREATE TABLE bus_make
-(
-    Model_number VARCHAR (16),
-    Capacity INT (100) UNSIGNED NOT NULL,
-    Safety_rating NUMERIC (2,1) NOT NULL,
-    Make VARCHAR (64) NOT NULL,
-    Brand VARCHAR (64) NOT NULL
-);
-
-CREATE TABLE bus
-(
-    Bus_number_plate VARCHAR (6) NOT NULL,
-    Fuel_costs NUMERIC (8,2) NULL,
-    Repair_costs NUMERIC (8,2) NULL,
-    Model_number VARCHAR (16) FOREIGN KEY NOT NULL,
-    PRIMARY KEY (Bus_number_plate),
-    FOREIGN KEY (Model_number)
-);
-
-
 CREATE TABLE employee
   (Employee_ID        INT PRIMARY KEY,
    lname      VARCHAR(15)      NOT NULL,
@@ -63,15 +48,9 @@ CREATE TABLE driving_time_log
 Log_date DATE,
 Total_hours_day INT);
 
-<<<<<<< HEAD
-INSERT INTO driving_time_log VALUES (12345, TO_DATE('31-12-2020','DD-MM-YYYY')), 7);
-INSERT INTO driving_time_log VALUES (11234, TO_DATE('31-12-2020','DD-MM-YYYY')), 7);
-INSERT INTO driving_time_log VALUES (12234, TO_DATE('31-12-2020','DD-MM-YYYY')), 7);
-=======
 INSERT INTO driving_time_log VALUES (12345, TO_DATE('31-12-2020','DD-MM-YYYY'), 7);
 INSERT INTO driving_time_log VALUES (11234, TO_DATE('31-12-2020','DD-MM-YYYY'), 7);
 INSERT INTO driving_time_log VALUES (12234, TO_DATE('31-12-2020','DD-MM-YYYY'), 7);
->>>>>>> 43dcd1c793afc1744feba329c6ada59477764949
 
 CREATE TABLE driving_route_log
 (Employee_ID INT REFERENCES employee (Employee_ID),
@@ -79,17 +58,10 @@ Log_date DATE,
 Route_taken INT,
 Bus_number_plate VARCHAR (6));
 
-<<<<<<< HEAD
-INSERT INTO driving_route_log VALUES (12345, TO_DATE('31-12-2020','DD-MM-YYYY')), 7,PB4567);
-INSERT INTO driving_route_log VALUES (12345, TO_DATE('31-12-2020','DD-MM-YYYY')), 5,PB4567);
-INSERT INTO driving_route_log VALUES (11234, TO_DATE('31-12-2020','DD-MM-YYYY')), 3,PB4561);
-INSERT INTO driving_route_log VALUES (11234, TO_DATE('31-12-2020','DD-MM-YYYY')), 4,PB4561);
-=======
 INSERT INTO driving_route_log VALUES (12345, TO_DATE('31-12-2020','DD-MM-YYYY'), 7,'PB4567');
 INSERT INTO driving_route_log VALUES (12345, TO_DATE('31-12-2020','DD-MM-YYYY'), 5,'PB4567');
 INSERT INTO driving_route_log VALUES (11234, TO_DATE('31-12-2020','DD-MM-YYYY'), 3,'PB4561');
 INSERT INTO driving_route_log VALUES (11234, TO_DATE('31-12-2020','DD-MM-YYYY'), 4,'PB4561');
->>>>>>> 43dcd1c793afc1744feba329c6ada59477764949
 
 CREATE TABLE roster
 (Employee_ID INT REFERENCES employee (Employee_ID),
@@ -216,5 +188,78 @@ CREATE TABLE serviced_by (
 
 INSERT INTO serviced_by VALUES (198, '10:00');
 INSERT INTO serviced_by VALUES (3, '16:30');
+
+CREATE TABLE bus_make
+(
+    Model_number VARCHAR(16) PRIMARY KEY,
+    Capacity NUMBER(2) NOT NULL,
+    Safety_rating NUMERIC(2,1) NOT NULL,
+    Make VARCHAR(64) NOT NULL,
+    Brand VARCHAR(64) NOT NULL
+);
+
+INSERT INTO bus_make VALUES ('x123123sa',99,1.1,'big bus','ford');
+INSERT INTO bus_make VALUES ('x12sasd3123sa',45,1.1,'small bus','holden');
+CREATE TABLE bus
+(
+    Number_plate VARCHAR(6) PRIMARY KEY,
+    Fuel_costs NUMERIC(8,2),
+    Repair_costs NUMERIC(8,2),
+    Model_number VARCHAR(16) NOT NULL,
+    CONSTRAINT fk_model FOREIGN KEY(Model_number)
+    REFERENCES bus_make(Model_number)
+);
+
+INSERT INTO bus VALUES ('xxxsss',100.51,1000,'x12sasd3123sa');
+INSERT INTO bus VALUES ('aaasss',105.51,10200,'x12sasd3123sa');
+INSERT INTO bus VALUES ('xxsss',100.51,1000,'x12sasd3123sa');
+INSERT INTO bus VALUES ('aasss',105.51,10200,'x12sasd3123sa');
+
+CREATE TABLE Condition
+(
+    Number_plate VARCHAR(6) PRIMARY KEY,
+    Wheels VARCHAR(5) CHECK( Wheels IN ('good','ok','bad')),
+    Bus_body VARCHAR(5) CHECK( Bus_body IN ('good','ok','bad')),
+    Transmission VARCHAR(5) CHECK( Transmission IN ('good','ok','bad')),
+    Engine VARCHAR(5) CHECK( Engine IN ('good','ok','bad')),
+    CONSTRAINT fk_condition FOREIGN KEY(Number_plate)
+    REFERENCES bus(Number_plate)
+);
+INSERT INTO Condition VALUES ('xxxsss','good','bad','good','bad');
+INSERT INTO Condition VALUES ('aaasss','bad','bad','good','bad');
+INSERT INTO Condition VALUES ('xxsss','good','bad','ok','bad');
+INSERT INTO Condition VALUES ('aasss','ok','bad','good','bad');
+
+CREATE TABLE REGO
+(
+    Number_plate VARCHAR(6) UNIQUE NOT NULL ,
+    ID VARCHAR(16) UNIQUE NOT NULL,
+    Due DATE NOT NULL,
+    DONE DATE NOT NULL,
+    CONSTRAINT pk_rego PRIMARY KEY(Number_plate,ID),
+    CONSTRAINT fk_rego FOREIGN KEY(Number_plate)
+    REFERENCES bus(Number_plate)
+);
+
+INSERT INTO REGO VALUES ('xxxsss','12',TO_DATE('31-12-2022','DD-MM-YYYY'),TO_DATE('16-9-2015','DD-MM-YYYY'));
+INSERT INTO REGO VALUES ('aaasss','14',TO_DATE('30-12-2023','DD-MM-YYYY'),TO_DATE('14-7-2016','DD-MM-YYYY'));
+INSERT INTO REGO VALUES ('xxsss','32',TO_DATE('29-12-2024','DD-MM-YYYY'),TO_DATE('5-12-2017','DD-MM-YYYY'));
+INSERT INTO REGO VALUES ('aasss','64',TO_DATE('28-12-2025','DD-MM-YYYY'),TO_DATE('31-3-2018','DD-MM-YYYY'));
+
+CREATE TABLE WOF
+(
+    Number_plate VARCHAR(6),
+    ID VARCHAR(16) UNIQUE NOT NULL,
+    Due DATE NOT NULL,
+    DONE DATE NOT NULL,
+    CONSTRAINT pk_wof PRIMARY KEY(Number_plate,ID),
+    CONSTRAINT fk_wof FOREIGN KEY(Number_plate)
+    REFERENCES bus(Number_plate)
+);
+
+INSERT INTO WOF VALUES ('xxxsss','123',TO_DATE('31-12-2022','DD-MM-YYYY'),TO_DATE('16-9-2015','DD-MM-YYYY'));
+INSERT INTO WOF VALUES ('aaasss','123123',TO_DATE('30-12-2023','DD-MM-YYYY'),TO_DATE('14-7-2016','DD-MM-YYYY'));
+INSERT INTO WOF VALUES ('xxsss','32123',TO_DATE('29-12-2024','DD-MM-YYYY'),TO_DATE('5-12-2017','DD-MM-YYYY'));
+INSERT INTO WOF VALUES ('aasss','12312364',TO_DATE('28-12-2025','DD-MM-YYYY'),TO_DATE('30-4-2018','DD-MM-YYYY'));
 
 COMMIT;
