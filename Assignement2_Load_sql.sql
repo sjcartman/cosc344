@@ -40,9 +40,9 @@ CREATE TABLE driving_time_log
 Log_date DATE;
 Total_hours_day INT (2));
 
-INSERT INTO driving_time_log VALUES (12345, TO_DATE('31-12-2020','DD-MM-YYYY’)), 7);
-INSERT INTO driving_time_log VALUES (11234, TO_DATE('31-12-2020','DD-MM-YYYY’)), 7);
-INSERT INTO driving_time_log VALUES (12234, TO_DATE('31-12-2020','DD-MM-YYYY’)), 7);
+INSERT INTO driving_time_log VALUES (12345, TO_DATE('31-12-2020','DD-MM-YYYY')), 7);
+INSERT INTO driving_time_log VALUES (11234, TO_DATE('31-12-2020','DD-MM-YYYY')), 7);
+INSERT INTO driving_time_log VALUES (12234, TO_DATE('31-12-2020','DD-MM-YYYY')), 7);
 
 CREATE TABLE driving_route_log
 (Employee_ID INT (5) REFERENCES employee (Employee_ID),
@@ -50,10 +50,10 @@ Log_date DATE,
 Route_taken INT (2),
 Bus_number_plate VARCHAR (6);
 
-INSERT INTO driving_route_log VALUES (12345, TO_DATE('31-12-2020','DD-MM-YYYY’)), 7,PB4567);
-INSERT INTO driving_route_log VALUES (12345, TO_DATE('31-12-2020','DD-MM-YYYY’)), 5,PB4567);
-INSERT INTO driving_route_log VALUES (11234, TO_DATE('31-12-2020','DD-MM-YYYY’)), 3,PB4561);
-INSERT INTO driving_route_log VALUES (11234, TO_DATE('31-12-2020','DD-MM-YYYY’)), 4,PB4561);
+INSERT INTO driving_route_log VALUES (12345, TO_DATE('31-12-2020','DD-MM-YYYY')), 7,PB4567);
+INSERT INTO driving_route_log VALUES (12345, TO_DATE('31-12-2020','DD-MM-YYYY')), 5,PB4567);
+INSERT INTO driving_route_log VALUES (11234, TO_DATE('31-12-2020','DD-MM-YYYY')), 3,PB4561);
+INSERT INTO driving_route_log VALUES (11234, TO_DATE('31-12-2020','DD-MM-YYYY')), 4,PB4561);
 
 CREATE TABLE roster
 (Employee_ID INT (5) REFERENCES employee (Employee_ID),
