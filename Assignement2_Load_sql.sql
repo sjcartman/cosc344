@@ -128,67 +128,57 @@ ALTER TABLE trip ADD FOREIGN KEY (employee_id) REFERENCES employee (Employee_ID)
 
 -- Zone (modeled by Alysha)
 CREATE TABLE zone (
-  zone_number INT PRIMARY KEY,
+  zone_number VARCHAR(1) PRIMARY KEY,
   card_price  DECIMAL(4,2) NOT NULL,
   cash_price  DECIMAL(4,2) NOT NULL,
   zone_colour VARCHAR(10) NOT NULL UNIQUE
 );
 
-INSERT INTO zone VALUES (1, 1.60, 2.20, 'Blue');
-INSERT INTO zone VALUES (2, 2.50, 3.10, 'Yellow');
-INSERT INTO zone VALUES (3, 3.80, 4.50, 'Red'); 
+INSERT INTO zone VALUES ('1', 1.60, 2.20, 'Blue');
+INSERT INTO zone VALUES ('2', 2.50, 3.10, 'Yellow');
+INSERT INTO zone VALUES ('3', 3.80, 4.50, 'Red'); 
 
 -- Zone Suburbs (modeled by Alysha)
 CREATE TABLE zone_suburbs (
-  Z_Number INT REFERENCES zone(zone_number),
+  Z_Number VARCHAR(1) REFERENCES zone(zone_number),
   Z_Suburb VARCHAR(20),
   PRIMARY KEY(Z_Number, Z_suburb)
 );
 
-INSERT INTO zone_suburbs VALUES (1, 'Centre City');
-INSERT INTO zone_suburbs VALUES (1, 'North Dunedin');
-INSERT INTO zone_suburbs VALUES (1, 'Roslyn');
-INSERT INTO zone_suburbs VALUES (2, 'South Dunedin');
-INSERT INTO zone_suburbs VALUES (2, 'North East Valley');
-INSERT INTO zone_suburbs VALUES (2, 'Pine Hill');
-INSERT INTO zone_suburbs VALUES (2, 'Kaikorai');
-INSERT INTO zone_suburbs VALUES (2, 'Caversham');
-INSERT INTO zone_suburbs VALUES (2, 'St Kila');
-INSERT INTO zone_suburbs VALUES (3, 'Wakari');
-INSERT INTO zone_suburbs VALUES (3, 'Andersons Bay');
-INSERT INTO zone_suburbs VALUES (3, 'Normanby');
+INSERT INTO zone_suburbs VALUES ('1', 'Centre City');
+INSERT INTO zone_suburbs VALUES ('1', 'North Dunedin');
+INSERT INTO zone_suburbs VALUES ('1', 'Roslyn');
+INSERT INTO zone_suburbs VALUES ('2', 'South Dunedin');
+INSERT INTO zone_suburbs VALUES ('2', 'North East Valley');
+INSERT INTO zone_suburbs VALUES ('2', 'Pine Hill');
+INSERT INTO zone_suburbs VALUES ('2', 'Kaikorai');
+INSERT INTO zone_suburbs VALUES ('2', 'Caversham');
+INSERT INTO zone_suburbs VALUES ('2', 'St Kila');
+INSERT INTO zone_suburbs VALUES ('3', 'Wakari');
+INSERT INTO zone_suburbs VALUES ('3', 'Andersons Bay');
+INSERT INTO zone_suburbs VALUES ('3', 'Normanby');
 
 -- Stop (modeled by Alysha)
 CREATE TABLE stop (
-  stop_number 	INT PRIMARY KEY,
+  stop_number 	varchar(3) PRIMARY KEY,
   address 	varchar(20) NOT NULL,
   shelter 	varchar(1) NOT NULL CHECK(shelter in('y','n')), --No boolean type
   bench 	varchar(1) NOT NULL CHECK(bench in('y','n')),
-  Z_Number	INT REFERENCES zone(zone_number) NOT NULL
+  Z_Number	varchar(1) REFERENCES zone(zone_number) NOT NULL
 );
 
-INSERT INTO stop VALUES (198, 'Pine Hill Road', 'y', 'y', 2);
-INSERT INTO stop VALUES (17, 'North Rd', 'n', 'n', 2);
-INSERT INTO stop VALUES (226, 'South Rd', 'n', 'n', 2);
-INSERT INTO stop VALUES (319, 'Hillside Rd', 'n', 'y', 2);
-INSERT INTO stop VALUES (20, 'King Edward St', 'y', 'n', 2);
-INSERT INTO stop VALUES (138, 'Princes St', 'n', 'y', 1);
-INSERT INTO stop VALUES (314, 'George St', 'y', 'y', 1);
-INSERT INTO stop VALUES (594, 'Cumberland St', 'y', 'n', 1);
-INSERT INTO stop VALUES (145, 'Tahuna Rd', 'y', 'n', 3);
-INSERT INTO stop VALUES (3, 'Greenhill Ave', 'y', 'n', 3);
-INSERT INTO stop VALUES (37, 'Chapman St', 'n', 'y', 3);
-INSERT INTO stop VALUES (73, 'Highcliff Rd', 'n', 'y', 3);
-
--- Serviced By (modeled by Alysha)
-CREATE TABLE serviced_by (
-  S_Number 	INT NOT NULL REFERENCES stop(stop_number),
-  --R_Number	INT NOT NULL TODO: References route number
-  time		VARCHAR(5) NOT NULL --No datatype for just time, dont need date as the times are the same every day
-);
-
-INSERT INTO serviced_by VALUES (198, '10:00');
-INSERT INTO serviced_by VALUES (3, '16:30');
+INSERT INTO stop VALUES ('198', 'Pine Hill Road', 'y', 'y', '2');
+INSERT INTO stop VALUES ('17', 'North Rd', 'n', 'n', '2');
+INSERT INTO stop VALUES ('226', 'South Rd', 'n', 'n', '2');
+INSERT INTO stop VALUES ('319', 'Hillside Rd', 'n', 'y', '2');
+INSERT INTO stop VALUES ('20', 'King Edward St', 'y', 'n', '2');
+INSERT INTO stop VALUES ('138', 'Princes St', 'n', 'y', '1');
+INSERT INTO stop VALUES ('314', 'George St', 'y', 'y', '1');
+INSERT INTO stop VALUES ('594', 'Cumberland St', 'y', 'n', '1');
+INSERT INTO stop VALUES ('145', 'Tahuna Rd', 'y', 'n', '3');
+INSERT INTO stop VALUES ('3', 'Greenhill Ave', 'y', 'n', '3');
+INSERT INTO stop VALUES (37, 'Chapman St', 'n', 'y', '3');
+INSERT INTO stop VALUES (73, 'Highcliff Rd', 'n', 'y', '3');
 
 --BUS modeled by Sean
 CREATE TABLE bus_make
@@ -272,4 +262,21 @@ Create TABLE ROUTE
 
 INSERT INTO route VALUES('1','red');
 INSERT INTO route VALUES('2','blue');
+
+-- Serviced By (modeled by Alysha)
+CREATE TABLE serviced_by (
+  S_Number      varchar(3) NOT NULL REFERENCES stop(stop_number),
+  R_Number      VARCHAR(2) NOT NULL REFERENCES ROUTE(Route_number),
+  time          VARCHAR(5) NOT NULL, --No datatype for just time, dont need date as the times are the same every day
+  PRIMARY KEY(S_Number, R_Number)
+);
+
+INSERT INTO serviced_by VALUES ('198', '1', '10:00');
+INSERT INTO serviced_by VALUES ('20', '1', '10:10');
+INSERT IntO serviced_by VALUES ('314', '1', '10:19');
+INSERT INTO serviced_by VALUES ('73', '2', '16:30');
+INSERT INTO serviced_by VALUES ('37', '2', '16:38');
+INSERT INTO serviced_by VALUES ('3', '2', '16:45');
+INSERT INTO serviced_by VALUES ('314', '2', '17:00');
+
 COMMIT;
