@@ -314,10 +314,12 @@ ALTER TABLE trip ADD FOREIGN KEY (route_number) REFERENCES route (route_number) 
 -- Data for Cadence's tables
 
 -- Riley Short
+-- registers an account
 INSERT INTO customer VALUES ('wonderfulperson@email.cool', 'Riley Short', '12 McMillan Street, Dunedin 9010, New Zealand', TO_DATE('1987-12-23', 'YYYY-MM-DD'), NULL);
+-- purchases a bee card
 INSERT INTO bee_card VALUES ('387366340', 20.00, 'wonderfulperson@email.cool');
 UPDATE customer SET card_number = '387366340' WHERE customer_email = 'wonderfulperson@email.cool';
--- make a trip
+-- makes a trip
 INSERT INTO trip VALUES (
   TO_DATE('2021-09-05 15:22', 'YYYY-MM-DD HH24:MI'),
   TO_DATE('2021-09-05 15:32', 'YYYY-MM-DD HH24:MI'),
@@ -332,10 +334,12 @@ INSERT INTO trip VALUES (
 UPDATE bee_card SET balance = balance - 2.00 WHERE card_number = '387366340';
 
 -- Charlie W Olivarez
+-- registers an account
 INSERT INTO customer VALUES ('cw@olivarez.family', 'Charlie W Olivarez', '149 Forth Street, Dunedin 9016, New Zealand', TO_DATE('1970-10-31', 'YYYY-MM-DD'), NULL);
+-- purchases a bee card
 INSERT INTO bee_card VALUES ('145748399', 20.00, 'cw@olivarez.family');
 UPDATE customer SET card_number = '145748399' WHERE customer_email = 'cw@olivarez.family';
--- make a trip
+-- makes a trip
 INSERT INTO trip VALUES (
   TO_DATE('2021-09-06 08:30', 'YYYY-MM-DD HH24:MI'),
   TO_DATE('2021-09-06 08:54', 'YYYY-MM-DD HH24:MI'),
@@ -351,6 +355,7 @@ UPDATE bee_card SET balance = balance - 3.00 WHERE card_number = '145748399';
 
 -- Shan Trive Schindler
 INSERT INTO customer VALUES ('sts@usa.fan', 'Shan Trive Schindler', '15 Scott Street, Dunedin 9012, New Zealand', TO_DATE('1996-02-06', 'YYYY-MM-DD'), NULL);
+-- purchases a bee card
 INSERT INTO bee_card VALUES ('424425653', 20.00, 'sts@usa.fan');
 UPDATE customer SET card_number = '424425653' WHERE customer_email = 'sts@usa.fan';
 -- shan hasn't taken any trips yet.
