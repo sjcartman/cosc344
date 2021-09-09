@@ -128,7 +128,7 @@ ALTER TABLE trip ADD FOREIGN KEY (employee_id) REFERENCES employee (Employee_ID)
 
 -- Zone (modeled by Alysha)
 CREATE TABLE zone (
-  zone_number VARCHAR(1) PRIMARY KEY, --Zones are only for dunedin area so there would never need to be more than 9
+  zone_number CHAR(1) PRIMARY KEY, --Zones are only for dunedin area so there would never need to be more than 9
   card_price  DECIMAL(4,2) NOT NULL,
   cash_price  DECIMAL(4,2) NOT NULL,
   zone_colour VARCHAR(10) NOT NULL UNIQUE
@@ -141,7 +141,7 @@ INSERT INTO zone VALUES ('4', 10.00, 14.00, 'Grey');
 
 -- Zone Suburbs (modeled by Alysha)
 CREATE TABLE zone_suburbs (
-  Z_Number VARCHAR(1) REFERENCES zone(zone_number),
+  Z_Number CHAR(1) REFERENCES zone(zone_number),
   Z_Suburb VARCHAR(20),
   PRIMARY KEY(Z_Number, Z_suburb)
 );
@@ -164,9 +164,9 @@ INSERT INTO zone_suburbs VALUES ('4', 'Airport');
 CREATE TABLE stop (
   stop_number 	varchar(3) PRIMARY KEY,
   address 	varchar(20) NOT NULL,
-  shelter 	varchar(1) NOT NULL CHECK(shelter in('y','n')), --No boolean type
-  bench 	varchar(1) NOT NULL CHECK(bench in('y','n')),
-  Z_Number	varchar(1) REFERENCES zone(zone_number) NOT NULL
+  shelter 	char(1) NOT NULL CHECK(shelter in('y','n')), --No boolean type
+  bench 	char(1) NOT NULL CHECK(bench in('y','n')),
+  Z_Number	char(1) REFERENCES zone(zone_number) NOT NULL
 );
 
 INSERT INTO stop VALUES ('198', 'Pine Hill Road', 'y', 'y', '2');
@@ -269,7 +269,7 @@ INSERT INTO route VALUES('3','yellow');
 
 -- Serviced By (modeled by Alysha)
 CREATE TABLE serviced_by (
-  S_Number      varchar(3) NOT NULL REFERENCES stop(stop_number),
+  S_Number      VARCHAR(3) NOT NULL REFERENCES stop(stop_number),
   R_Number      VARCHAR(2) NOT NULL REFERENCES ROUTE(Route_number),
   time          VARCHAR(5) NOT NULL, --No datatype for just time, dont need date as the times are the same every day
   PRIMARY KEY(S_Number, R_Number)
