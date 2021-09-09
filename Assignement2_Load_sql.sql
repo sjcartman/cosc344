@@ -7,36 +7,38 @@ DROP TABLE zone cascade constraints;
 DROP TABLE zone_suburbs;
 DROP TABLE stop cascade constraints;
 DROP TABLE serviced_by;
-DROP TABLE REGO;
-DROP TABLE WOF;
+DROP TABLE rego;
+DROP TABLE wof;
 DROP TABLE condition;
-DROP TABLE bus;
-DROP TABLE bus_make;
-DROP TABLE ROUTE;
+DROP TABLE bus CASCADE CONSTRAINTS;
+DROP TABLE bus_make CASCADE CONSTRAINTS;
+DROP TABLE route CASCADE CONSTRAINTS;
 DROP TABLE trip CASCADE CONSTRAINTS;
 DROP TABLE bee_card CASCADE CONSTRAINTS;
 DROP TABLE customer CASCADE CONSTRAINTS;
 
---Table:
-CREATE TABLE employee
-  (Employee_ID        INT PRIMARY KEY,
-   lname      VARCHAR(15)      NOT NULL,
-   fname      VARCHAR(15)      NOT NULL,
-   Age_bracket INT,
-   Gender VARCHAR(1));
-
+-- Employee table (modeled by Indu)
+CREATE TABLE employee (
+  employee_id        INT PRIMARY KEY,
+  lname      VARCHAR(15)      NOT NULL,
+  fname      VARCHAR(15)      NOT NULL,
+  age_bracket INT,
+  gender VARCHAR(1)
+);
 
 INSERT INTO employee VALUES (12345, 'Fire', 'Sean', 2, 'M');
 INSERT INTO employee VALUES (11234, 'Robertson', 'Luke', 2,'M');
 INSERT INTO employee VALUES (12344, 'Gits', 'Samantha', 3,'F');
 INSERT INTO employee VALUES (12234, 'Smith', 'Hyden',1,'M');
 
+-- Employee experience table (modeled by Indu)
 
-CREATE TABLE employee_experience
-(Employee_ID INT REFERENCES employee (Employee_ID),
-Driving_level​ INT,
-Training_level​ INT,
-Years_experience​ INT);
+CREATE TABLE employee_experience (
+  employee_id INT REFERENCES employee (employee_id),
+  Driving_level​ INT,
+  Training_level​ INT,
+  Years_experience​ INT
+);
 --CONSTRAINT emp_cnst REFERENCES employee(employee_ID) DISABLE;
 
 INSERT INTO employee_experience VALUES (12345, 1, 2, 20);
@@ -46,31 +48,37 @@ INSERT INTO employee_experience VALUES (12234, 1, 2, 5);
 
 --ALTER TABLE employee ENABLE CONSTRAINT superssn_cnst;
 
---Table: driving_time_log
-CREATE TABLE driving_time_log
-(Employee_ID INT REFERENCES employee (Employee_ID),
-Log_date DATE,
-Total_hours_day INT);
+-- Driving log (modeled by Indu)
+
+CREATE TABLE driving_time_log (
+  employee_id INT REFERENCES employee (employee_id),
+  log_date DATE,
+  total_hours_day INT
+);
 
 INSERT INTO driving_time_log VALUES (12345, TO_DATE('31-12-2020','DD-MM-YYYY'), 7);
 INSERT INTO driving_time_log VALUES (11234, TO_DATE('31-12-2020','DD-MM-YYYY'), 7);
 INSERT INTO driving_time_log VALUES (12234, TO_DATE('31-12-2020','DD-MM-YYYY'), 7);
 
-CREATE TABLE driving_route_log
-(Employee_ID INT REFERENCES employee (Employee_ID),
-Log_date DATE,
-Route_taken INT,
-Bus_number_plate VARCHAR (6));
+CREATE TABLE driving_route_log (
+  employee_id INT REFERENCES employee (employee_id),
+  log_date DATE,
+  route_taken INT,
+  bus_number_plate VARCHAR (6)
+);
 
 INSERT INTO driving_route_log VALUES (12345, TO_DATE('31-12-2020','DD-MM-YYYY'), 7,'PB4567');
 INSERT INTO driving_route_log VALUES (12345, TO_DATE('31-12-2020','DD-MM-YYYY'), 5,'PB4567');
 INSERT INTO driving_route_log VALUES (11234, TO_DATE('31-12-2020','DD-MM-YYYY'), 3,'PB4561');
 INSERT INTO driving_route_log VALUES (11234, TO_DATE('31-12-2020','DD-MM-YYYY'), 4,'PB4561');
 
-CREATE TABLE roster
-(Employee_ID INT REFERENCES employee (Employee_ID),
-Shift VARCHAR (7),
-Day_of_the_week​ VARCHAR (3));
+-- Roster (modeled by Indu)
+
+CREATE TABLE roster (
+  employee_id INT REFERENCES employee (employee_id),
+  shift VARCHAR (7),
+  day_of_the_week​ VARCHAR (3)
+);
 
 INSERT INTO roster VALUES (12345, 'Morning', 'Mon');
 INSERT INTO roster VALUES (12345, 'Morning', 'Tue');
@@ -86,6 +94,7 @@ INSERT INTO roster VALUES (11234, 'Morning', 'Thu');
 INSERT INTO roster VALUES (11234, 'Evening', 'Fri');
 
 -- Zone (modeled by Alysha)
+
 CREATE TABLE zone (
   zone_number CHAR(1) PRIMARY KEY, --Zones are only for dunedin area so there would never need to be more than 9
   card_price  DECIMAL(4,2) NOT NULL,
@@ -99,10 +108,11 @@ INSERT INTO zone VALUES ('3', 3.80, 4.50, 'Red');
 INSERT INTO zone VALUES ('4', 10.00, 14.00, 'Grey');
 
 -- Zone Suburbs (modeled by Alysha)
+
 CREATE TABLE zone_suburbs (
-  Z_Number CHAR(1) REFERENCES zone(zone_number),
-  Z_Suburb VARCHAR(20),
-  PRIMARY KEY(Z_Number, Z_suburb)
+  z_number CHAR(1) REFERENCES zone (zone_number),
+  z_suburb VARCHAR(20),
+  PRIMARY KEY (z_number, z_suburb)
 );
 
 INSERT INTO zone_suburbs VALUES ('1', 'Centre City');
@@ -113,19 +123,20 @@ INSERT INTO zone_suburbs VALUES ('2', 'North East Valley');
 INSERT INTO zone_suburbs VALUES ('2', 'Pine Hill');
 INSERT INTO zone_suburbs VALUES ('2', 'Kaikorai');
 INSERT INTO zone_suburbs VALUES ('2', 'Caversham');
-INSERT INTO zone_suburbs VALUES ('2', 'St Kila');
+INSERT INTO zone_suburbs VALUES ('2', 'St Kilda');
 INSERT INTO zone_suburbs VALUES ('3', 'Wakari');
 INSERT INTO zone_suburbs VALUES ('3', 'Andersons Bay');
 INSERT INTO zone_suburbs VALUES ('3', 'Normanby');
 INSERT INTO zone_suburbs VALUES ('4', 'Airport');
 
 -- Stop (modeled by Alysha)
+
 CREATE TABLE stop (
   stop_number 	varchar(3) PRIMARY KEY,
   address 	varchar(20) NOT NULL,
   shelter 	char(1) NOT NULL CHECK(shelter in('y','n')), --No boolean type
   bench 	char(1) NOT NULL CHECK(bench in('y','n')),
-  Z_Number	char(1) REFERENCES zone(zone_number) NOT NULL
+  z_number	char(1) REFERENCES zone (zone_number) NOT NULL
 );
 
 INSERT INTO stop VALUES ('198', 'Pine Hill Road', 'y', 'y', '2');
@@ -142,26 +153,30 @@ INSERT INTO stop VALUES ('37', 'Chapman St', 'n', 'y', '3');
 INSERT INTO stop VALUES ('73', 'Highcliff Rd', 'n', 'y', '3');
 INSERT INTO stop VALUES ('400', 'Airport', 'y', 'y', 4);
 
---BUS modeled by Sean
+-- Bus make (modeled by Sean)
+
 CREATE TABLE bus_make
 (
-    Model_ID CHAR(12) PRIMARY KEY CHECK(REGEXP_LIKE(Model_ID,'\d{12}')), --char 12 is used, as we assume this bus will have a 12 digit long number to identify it
-    Capacity CHAR(2) NOT NULL CHECK(REGEXP_LIKE(Capacity,'\d{2}')) , -- the Capacity of the bus will  be a number between 10 and 99
-    Safety_rating CHAR(3) NOT NULL CHECK(REGEXP_LIKE(Safety_rating,'[0-5]\.\d{1}')) , -- the saftey rating will be a number between 5 and 0, with one dp. because calcuations will never be used, varchar is best 
-    Make VARCHAR(64) NOT NULL, -- the make of the bus
-    Brand VARCHAR(64) NOT NULL -- the brand of the bus
+    model_id CHAR(12) PRIMARY KEY CHECK(REGEXP_LIKE(model_id,'\d{12}')), --char 12 is used, as we assume this bus will have a 12 digit long number to identify it
+    capacity CHAR(2) NOT NULL CHECK(REGEXP_LIKE(capacity,'\d{2}')) , -- the Capacity of the bus will  be a number between 10 and 99
+    safety_rating CHAR(3) NOT NULL CHECK(REGEXP_LIKE(safety_rating,'[0-5]\.\d{1}')) , -- the saftey rating will be a number between 5 and 0, with one dp. because calcuations will never be used, varchar is best
+    make VARCHAR(64) NOT NULL, -- the make of the bus
+    brand VARCHAR(64) NOT NULL -- the brand of the bus
 );
 
 INSERT INTO bus_make VALUES ('148163211332','10','1.1','big bus','ford');
 INSERT INTO bus_make VALUES ('222211113333','45','1.1','small bus','holden');
+
+-- Bus (modeled by Sean)
+
 CREATE TABLE bus
 (
-    Number_plate VARCHAR(6) PRIMARY KEY ,--Number plate has not fixed lenght and a max of 6 charaters
-    Fuel_costs DECIMAL(8,2) CHECK (Fuel_costs > 0) NOT NULL, -- can't be negative. costs could pile up so large upper bound is set
-    Repair_costs DECIMAL(8,2) CHECK (Repair_costs > 0) NOT NULL, -- can't be negative. costs could pile up so large upper bound is set
-    Model_ID CHAR(12) NOT NULL CHECK(REGEXP_LIKE(Model_ID,'\d{12}')),-- keep info on what model the bus is 
-    CONSTRAINT fk_model FOREIGN KEY(Model_ID)
-    REFERENCES bus_make(Model_ID)
+    number_plate VARCHAR(6) PRIMARY KEY ,--Number plate has not fixed lenght and a max of 6 charaters
+    fuel_costs DECIMAL(8,2) CHECK (fuel_costs > 0) NOT NULL, -- can't be negative. costs could pile up so large upper bound is set
+    repair_costs DECIMAL(8,2) CHECK (repair_costs > 0) NOT NULL, -- can't be negative. costs could pile up so large upper bound is set
+    model_id CHAR(12) NOT NULL CHECK (REGEXP_LIKE(model_id,'\d{12}')),-- keep info on what model the bus is
+    CONSTRAINT fk_model FOREIGN KEY (model_id)
+    REFERENCES bus_make(model_id)
 );
 
 INSERT INTO bus VALUES ('xxxsss',100.51,1000,'222211113333');
@@ -169,57 +184,64 @@ INSERT INTO bus VALUES ('aaasss',105.51,10200,'222211113333');
 INSERT INTO bus VALUES ('xxsss',100.51,1000,'148163211332');
 INSERT INTO bus VALUES ('aasss',105.51,10200,'148163211332');
 
+-- Condition (modeled by Sean)
+
 CREATE TABLE Condition
 (
-    Number_plate VARCHAR(6) PRIMARY KEY, -- is a composite attribute of bus
-    Wheels VARCHAR(5) CHECK( Wheels IN ('good','ok','bad')),-- all conditons are limtied to there 3 groups
-    Bus_body VARCHAR(5) CHECK( Bus_body IN ('good','ok','bad')),
-    Transmission VARCHAR(5) CHECK( Transmission IN ('good','ok','bad')),
-    Engine VARCHAR(5) CHECK( Engine IN ('good','ok','bad')),
-    CONSTRAINT fk_condition FOREIGN KEY(Number_plate)
+    number_plate VARCHAR(6) PRIMARY KEY, -- is a composite attribute of bus
+    wheels VARCHAR(5) CHECK (wheels IN ('good','ok','bad')),-- all conditons are limtied to there 3 groups
+    bus_body VARCHAR(5) CHECK (bus_body IN ('good','ok','bad')),
+    transmission VARCHAR(5) CHECK (transmission IN ('good','ok','bad')),
+    engine VARCHAR(5) CHECK (engine IN ('good','ok','bad')),
+    CONSTRAINT fk_condition FOREIGN KEY (number_plate)
     REFERENCES bus(Number_plate)
 );
+
 INSERT INTO Condition VALUES ('xxxsss','good','bad','good','bad');
 INSERT INTO Condition VALUES ('aaasss','bad','bad','good','bad');
 INSERT INTO Condition VALUES ('xxsss','good','bad','ok','bad');
 INSERT INTO Condition VALUES ('aasss','ok','bad','good','bad');
 
-CREATE TABLE REGO-- is a composite attribute of bus
+-- Rego (modeled by Sean)
+
+CREATE TABLE rego -- is a composite attribute of bus
 (
-    Number_plate VARCHAR(6) UNIQUE NOT NULL ,
-    ID CHAR(8) UNIQUE NOT NULL CHECK(REGEXP_LIKE(ID,'\d{8}')),
-    Due DATE NOT NULL,
-    DONE DATE NOT NULL,
-    CONSTRAINT pk_rego PRIMARY KEY(Number_plate,ID),
-    CONSTRAINT fk_rego FOREIGN KEY(Number_plate)
-    REFERENCES bus(Number_plate)
+    number_plate VARCHAR(6) UNIQUE NOT NULL ,
+    id CHAR(8) UNIQUE NOT NULL CHECK (REGEXP_LIKE(id,'\d{8}')),
+    due DATE NOT NULL,
+    done DATE NOT NULL,
+    CONSTRAINT pk_rego PRIMARY KEY (number_plate, id),
+    CONSTRAINT fk_rego FOREIGN KEY (number_plate)
+    REFERENCES bus(number_plate)
 );
 
-INSERT INTO REGO VALUES ('xxxsss','77778888',TO_DATE('31-12-2022','DD-MM-YYYY'),TO_DATE('16-9-2015','DD-MM-YYYY'));
-INSERT INTO REGO VALUES ('aaasss','99994444',TO_DATE('30-12-2023','DD-MM-YYYY'),TO_DATE('14-7-2016','DD-MM-YYYY'));
-INSERT INTO REGO VALUES ('xxsss','22222222',TO_DATE('29-12-2024','DD-MM-YYYY'),TO_DATE('5-12-2017','DD-MM-YYYY'));
-INSERT INTO REGO VALUES ('aasss','66677722',TO_DATE('28-12-2025','DD-MM-YYYY'),TO_DATE('31-3-2018','DD-MM-YYYY'));
+INSERT INTO rego VALUES ('xxxsss','77778888',TO_DATE('31-12-2022','DD-MM-YYYY'),TO_DATE('16-9-2015','DD-MM-YYYY'));
+INSERT INTO rego VALUES ('aaasss','99994444',TO_DATE('30-12-2023','DD-MM-YYYY'),TO_DATE('14-7-2016','DD-MM-YYYY'));
+INSERT INTO rego VALUES ('xxsss','22222222',TO_DATE('29-12-2024','DD-MM-YYYY'),TO_DATE('5-12-2017','DD-MM-YYYY'));
+INSERT INTO rego VALUES ('aasss','66677722',TO_DATE('28-12-2025','DD-MM-YYYY'),TO_DATE('31-3-2018','DD-MM-YYYY'));
 
-CREATE TABLE WOF-- is a composite attribute of bus
-(
-    Number_plate VARCHAR(6),
-    ID CHAR(8) UNIQUE NOT NULL CHECK(REGEXP_LIKE(ID,'\d{8}')),
-    Due DATE NOT NULL,
-    DONE DATE NOT NULL,
-    CONSTRAINT pk_wof PRIMARY KEY(Number_plate,ID),
-    CONSTRAINT fk_wof FOREIGN KEY(Number_plate)
-    REFERENCES bus(Number_plate)
+-- WOF (modeled by Sean)
+
+CREATE TABLE wof ( -- is a composite attribute of bus
+    number_plate VARCHAR(6),
+    id CHAR(8) UNIQUE NOT NULL CHECK(REGEXP_LIKE(id,'\d{8}')),
+    due DATE NOT NULL,
+    done DATE NOT NULL,
+    CONSTRAINT pk_wof PRIMARY KEY (number_plate,id),
+    CONSTRAINT fk_wof FOREIGN KEY (number_plate)
+    REFERENCES bus(number_plate)
 );
 
-INSERT INTO WOF VALUES ('xxxsss','44442222',TO_DATE('31-12-2022','DD-MM-YYYY'),TO_DATE('16-9-2015','DD-MM-YYYY'));
-INSERT INTO WOF VALUES ('aaasss','33333333',TO_DATE('30-12-2023','DD-MM-YYYY'),TO_DATE('14-7-2016','DD-MM-YYYY'));
-INSERT INTO WOF VALUES ('xxsss','12345678',TO_DATE('29-12-2024','DD-MM-YYYY'),TO_DATE('5-12-2017','DD-MM-YYYY'));
-INSERT INTO WOF VALUES ('aasss','99922211',TO_DATE('28-12-2025','DD-MM-YYYY'),TO_DATE('30-4-2018','DD-MM-YYYY'));
+INSERT INTO wof VALUES ('xxxsss','44442222',TO_DATE('31-12-2022','DD-MM-YYYY'),TO_DATE('16-9-2015','DD-MM-YYYY'));
+INSERT INTO wof VALUES ('aaasss','33333333',TO_DATE('30-12-2023','DD-MM-YYYY'),TO_DATE('14-7-2016','DD-MM-YYYY'));
+INSERT INTO wof VALUES ('xxsss','12345678',TO_DATE('29-12-2024','DD-MM-YYYY'),TO_DATE('5-12-2017','DD-MM-YYYY'));
+INSERT INTO wof VALUES ('aasss','99922211',TO_DATE('28-12-2025','DD-MM-YYYY'),TO_DATE('30-4-2018','DD-MM-YYYY'));
 
-Create TABLE ROUTE
-(
-    Route_number varchar(2) PRIMARY KEY CHECK(REGEXP_LIKE(Route_number,'[0-9]+$')),
-    colour varchar(16) NOT NULL UNIQUE
+-- Route (modeled by Sean)
+
+CREATE TABLE route (
+    route_number VARCHAR(2) PRIMARY KEY CHECK(REGEXP_LIKE(route_number,'[0-9]+$')),
+    colour VARCHAR(16) NOT NULL UNIQUE
 );
 
 INSERT INTO route VALUES('1','red');
@@ -228,10 +250,10 @@ INSERT INTO route VALUES('3','yellow');
 
 -- Serviced By (modeled by Alysha)
 CREATE TABLE serviced_by (
-  S_Number      VARCHAR(3) NOT NULL REFERENCES stop(stop_number),
-  R_Number      VARCHAR(2) NOT NULL REFERENCES ROUTE(Route_number),
+  S_Number      VARCHAR(3) NOT NULL REFERENCES stop (stop_number),
+  R_Number      VARCHAR(2) NOT NULL REFERENCES route (route_number),
   time          VARCHAR(5) NOT NULL, --No datatype for just time, dont need date as the times are the same every day
-  PRIMARY KEY(S_Number, R_Number)
+  PRIMARY KEY(s_number, r_number)
 );
 
 INSERT INTO serviced_by VALUES ('198', '1', '10:00');
@@ -260,11 +282,12 @@ CREATE TABLE bee_card (
   card_number CHAR (9) PRIMARY KEY, -- bee card ids are exactly 9 digits long
   balance DECIMAL (6, 2) NOT NULL, -- bee card maximum balance is $2000, so this fits all the digits
   customer_email VARCHAR (320) NOT NULL UNIQUE, -- email addresses can be up to 320 characters long
-  CONSTRAINT bee_card_balance_min CHECK (balance >= 0)
+  CONSTRAINT bee_card_balance_min CHECK (balance >= 0.00 AND balance <= 2000.00)
 );
 
 -- Trip (modeled by Cadence)
 -- trip is a weak entity and has no primary key
+
 CREATE TABLE trip (
   trip_started DATE NOT NULL,
   trip_ended DATE NOT NULL,
@@ -282,8 +305,8 @@ CREATE TABLE trip (
 ALTER TABLE customer ADD FOREIGN KEY (card_number) REFERENCES bee_card (card_number);
 ALTER TABLE bee_card ADD FOREIGN KEY (customer_email) REFERENCES customer (customer_email) ON DELETE CASCADE;
 ALTER TABLE trip ADD FOREIGN KEY (card_number) REFERENCES bee_card (card_number) ON DELETE CASCADE;
-ALTER TABLE trip ADD FOREIGN KEY (employee_id) REFERENCES employee (Employee_ID) ON DELETE CASCADE;
-ALTER TABLE trip ADD FOREIGN KEY (number_plate) REFERENCES bus (Number_plate) ON DELETE CASCADE;
+ALTER TABLE trip ADD FOREIGN KEY (employee_id) REFERENCES employee (employee_id) ON DELETE CASCADE;
+ALTER TABLE trip ADD FOREIGN KEY (number_plate) REFERENCES bus (number_plate) ON DELETE CASCADE;
 ALTER TABLE trip ADD FOREIGN KEY (starts_at_stop) REFERENCES stop (stop_number) ON DELETE CASCADE;
 ALTER TABLE trip ADD FOREIGN KEY (ends_at_stop) REFERENCES stop (stop_number) ON DELETE CASCADE;
 ALTER TABLE trip ADD FOREIGN KEY (route_number) REFERENCES route (Route_number) ON DELETE CASCADE;
