@@ -289,6 +289,7 @@ CREATE TABLE bee_card (
 -- trip is a weak entity and has no primary key
 
 CREATE TABLE trip (
+  trip_id INT PRIMARY KEY,
   trip_started DATE NOT NULL,
   trip_ended DATE NOT NULL,
   fare_charged DECIMAL (4, 2) NOT NULL,
@@ -321,6 +322,7 @@ INSERT INTO bee_card VALUES ('387366340', 20.00, 'wonderfulperson@email.cool');
 UPDATE customer SET card_number = '387366340' WHERE customer_email = 'wonderfulperson@email.cool';
 -- makes a trip
 INSERT INTO trip VALUES (
+  1,
   TO_DATE('2021-09-05 15:22', 'YYYY-MM-DD HH24:MI'),
   TO_DATE('2021-09-05 15:32', 'YYYY-MM-DD HH24:MI'),
   2.00,
@@ -341,6 +343,7 @@ INSERT INTO bee_card VALUES ('145748399', 20.00, 'cw@olivarez.family');
 UPDATE customer SET card_number = '145748399' WHERE customer_email = 'cw@olivarez.family';
 -- makes a trip
 INSERT INTO trip VALUES (
+  2,
   TO_DATE('2021-09-06 08:30', 'YYYY-MM-DD HH24:MI'),
   TO_DATE('2021-09-06 08:54', 'YYYY-MM-DD HH24:MI'),
   3.00,
