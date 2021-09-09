@@ -13,6 +13,9 @@ DROP TABLE condition;
 DROP TABLE bus;
 DROP TABLE bus_make;
 DROP TABLE ROUTE;
+DROP TABLE trip CASCADE CONSTRAINTS;
+DROP TABLE bee_card CASCADE CONSTRAINTS;
+DROP TABLE customer CASCADE CONSTRAINTS;
 
 --Table:
 CREATE TABLE employee
@@ -81,50 +84,6 @@ INSERT INTO roster VALUES (11234, 'Evening', 'Wed');
 INSERT INTO roster VALUES (11234, 'Morning', 'Wed');
 INSERT INTO roster VALUES (11234, 'Morning', 'Thu');
 INSERT INTO roster VALUES (11234, 'Evening', 'Fri');
-
--- Customer (modeled by Cadence)
-
-DROP TABLE customer CASCADE CONSTRAINTS;
-CREATE TABLE customer (
-  customer_email VARCHAR (320) PRIMARY KEY, -- email addresses can be up to 320 characters long
-  full_name VARCHAR (4000) NOT NULL,                 -- names can be any length
-  address VARCHAR (4000) NOT NULL,
-  birthdate DATE NOT NULL,
-  card_number CHAR (9) UNIQUE -- can be null if the customer has signed up and not purchased a card yet -- NOTE: add reference later
-);
-
--- Bee card (modeled by Cadence)
-
-DROP TABLE bee_card CASCADE CONSTRAINTS;
-CREATE TABLE bee_card (
-  card_number CHAR (9) PRIMARY KEY, -- bee card ids are exactly 9 digits long
-  balance DECIMAL (6, 2) NOT NULL, -- bee card maximum balance is $2000, so this fits all the digits
-  customer_email VARCHAR (320) NOT NULL UNIQUE, -- email addresses can be up to 320 characters long
-  CONSTRAINT bee_card_balance_min CHECK (balance >= 0)
-);
-
--- Trip (modeled by Cadence)
--- trip is a weak entity and has no primary key
-DROP TABLE trip CASCADE CONSTRAINTS;
-CREATE TABLE trip (
-  trip_started DATE NOT NULL,
-  trip_ended DATE NOT NULL,
-  fare_charged DECIMAL (4, 2) NOT NULL,
-  card_number CHAR (9) -- may be null because the trip may have been paid in cash
-  bus_number_plate VARCHAR (6) NOT NULL, -- TODO: need to add reference
-  employee_id INT NOT NULL,
-  starts_at_stop INT NOT NULL, -- TODO: need to add reference
-  ends_at_stop INT NOT NULL, -- TODO: need to add reference
-  route_id INT NOT NULL,, -- TODO: need to add reference
-);
-
--- Foreign key constraints for Cadence's tables
-
-ALTER TABLE customer ADD FOREIGN KEY (card_number) REFERENCES bee_card (card_number);
-ALTER TABLE bee_card ADD FOREIGN KEY (customer_email) REFERENCES customer (customer_email) ON DELETE CASCADE;
-ALTER TABLE trip ADD FOREIGN KEY (card_number) REFERENCES bee_card (card_number) ON DELETE CASCADE;
-ALTER TABLE trip ADD FOREIGN KEY (employee_id) REFERENCES employee (Employee_ID) ON DELETE CASCADE;
-
 
 -- Zone (modeled by Alysha)
 CREATE TABLE zone (
@@ -284,4 +243,49 @@ INSERT INTO serviced_by VALUES ('3', '2', '16:45');
 INSERT INTO serviced_by VALUES ('314', '2', '17:00');
 INSERT INTO serviced_by VALUES ('314', '3', '10:00');
 INSERT INTO serviced_by VALUES ('400', '3', '11:00');
+
+-- Customer (modeled by Cadence)
+
+CREATE TABLE customer (
+  customer_email VARCHAR (320) PRIMARY KEY, -- email addresses can be up to 320 characters long
+  full_name VARCHAR (4000) NOT NULL,        -- names can be any length
+  address VARCHAR (4000) NOT NULL,
+  birthdate DATE NOT NULL,
+  card_number CHAR (9) UNIQUE -- can be null if the customer has signed up and not purchased a card yet
+);
+
+-- Bee card (modeled by Cadence)
+
+CREATE TABLE bee_card (
+  card_number CHAR (9) PRIMARY KEY, -- bee card ids are exactly 9 digits long
+  balance DECIMAL (6, 2) NOT NULL, -- bee card maximum balance is $2000, so this fits all the digits
+  customer_email VARCHAR (320) NOT NULL UNIQUE, -- email addresses can be up to 320 characters long
+  CONSTRAINT bee_card_balance_min CHECK (balance >= 0)
+);
+
+-- Trip (modeled by Cadence)
+-- trip is a weak entity and has no primary key
+CREATE TABLE trip (
+  trip_started DATE NOT NULL,
+  trip_ended DATE NOT NULL,
+  fare_charged DECIMAL (4, 2) NOT NULL,
+  card_number CHAR (9), -- may be null because the trip may have been paid in cash
+  number_plate VARCHAR (6) NOT NULL,
+  employee_id INT NOT NULL,
+  starts_at_stop INT NOT NULL,
+  ends_at_stop INT NOT NULL,
+  route_number INT NOT NULL
+);
+
+-- Foreign key constraints for Cadence's tables
+
+ALTER TABLE customer ADD FOREIGN KEY (card_number) REFERENCES bee_card (card_number);
+ALTER TABLE bee_card ADD FOREIGN KEY (customer_email) REFERENCES customer (customer_email) ON DELETE CASCADE;
+ALTER TABLE trip ADD FOREIGN KEY (card_number) REFERENCES bee_card (card_number) ON DELETE CASCADE;
+ALTER TABLE trip ADD FOREIGN KEY (employee_id) REFERENCES employee (Employee_ID) ON DELETE CASCADE;
+ALTER TABLE trip ADD FOREIGN KEY (number_plate) REFERENCES bus (Number_plate) ON DELETE CASCADE;
+ALTER TABLE trip ADD FOREIGN KEY (starts_at_stop) REFERENCES stop (stop_number) ON DELETE CASCADE;
+ALTER TABLE trip ADD FOREIGN KEY (ends_at_stop) REFERENCES stop (stop_number) ON DELETE CASCADE;
+ALTER TABLE trip ADD FOREIGN KEY (route_number) REFERENCES route (Route_number) ON DELETE CASCADE;
+
 COMMIT;
