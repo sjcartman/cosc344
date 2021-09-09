@@ -128,7 +128,7 @@ ALTER TABLE trip ADD FOREIGN KEY (employee_id) REFERENCES employee (Employee_ID)
 
 -- Zone (modeled by Alysha)
 CREATE TABLE zone (
-  zone_number VARCHAR(1) PRIMARY KEY,
+  zone_number VARCHAR(1) PRIMARY KEY, --Zones are only for dunedin area so there would never need to be more than 9
   card_price  DECIMAL(4,2) NOT NULL,
   cash_price  DECIMAL(4,2) NOT NULL,
   zone_colour VARCHAR(10) NOT NULL UNIQUE
@@ -137,6 +137,7 @@ CREATE TABLE zone (
 INSERT INTO zone VALUES ('1', 1.60, 2.20, 'Blue');
 INSERT INTO zone VALUES ('2', 2.50, 3.10, 'Yellow');
 INSERT INTO zone VALUES ('3', 3.80, 4.50, 'Red'); 
+INSERT INTO zone VALUES ('4', 10.00, 14.00, 'Grey');
 
 -- Zone Suburbs (modeled by Alysha)
 CREATE TABLE zone_suburbs (
@@ -157,6 +158,7 @@ INSERT INTO zone_suburbs VALUES ('2', 'St Kila');
 INSERT INTO zone_suburbs VALUES ('3', 'Wakari');
 INSERT INTO zone_suburbs VALUES ('3', 'Andersons Bay');
 INSERT INTO zone_suburbs VALUES ('3', 'Normanby');
+INSERT INTO zone_suburbs VALUES ('4', 'Airport');
 
 -- Stop (modeled by Alysha)
 CREATE TABLE stop (
@@ -177,8 +179,9 @@ INSERT INTO stop VALUES ('314', 'George St', 'y', 'y', '1');
 INSERT INTO stop VALUES ('594', 'Cumberland St', 'y', 'n', '1');
 INSERT INTO stop VALUES ('145', 'Tahuna Rd', 'y', 'n', '3');
 INSERT INTO stop VALUES ('3', 'Greenhill Ave', 'y', 'n', '3');
-INSERT INTO stop VALUES (37, 'Chapman St', 'n', 'y', '3');
-INSERT INTO stop VALUES (73, 'Highcliff Rd', 'n', 'y', '3');
+INSERT INTO stop VALUES ('37', 'Chapman St', 'n', 'y', '3');
+INSERT INTO stop VALUES ('73', 'Highcliff Rd', 'n', 'y', '3');
+INSERT INTO stop VALUES ('400', 'Airport', 'y', 'y', 4);
 
 --BUS modeled by Sean
 CREATE TABLE bus_make
@@ -262,6 +265,7 @@ Create TABLE ROUTE
 
 INSERT INTO route VALUES('1','red');
 INSERT INTO route VALUES('2','blue');
+INSERT INTO route VALUES('3','yellow');
 
 -- Serviced By (modeled by Alysha)
 CREATE TABLE serviced_by (
@@ -278,5 +282,6 @@ INSERT INTO serviced_by VALUES ('73', '2', '16:30');
 INSERT INTO serviced_by VALUES ('37', '2', '16:38');
 INSERT INTO serviced_by VALUES ('3', '2', '16:45');
 INSERT INTO serviced_by VALUES ('314', '2', '17:00');
-
+INSERT INTO serviced_by VALUES ('314', '3', '10:00');
+INSERT INTO serviced_by VALUES ('400', '3', '11:00');
 COMMIT;
