@@ -183,29 +183,29 @@ INSERT INTO stop VALUES (73, 'Highcliff Rd', 'n', 'y', '3');
 --BUS modeled by Sean
 CREATE TABLE bus_make
 (
-    Model_ID CHAR(12) PRIMARY KEY, --char 12 is used, as well assume this bus a 12 digit long number to identify it
-    Capacity DECIMAL(2) NOT NULL CHECK (Capacity > 0), -- the Capacity of the bus will never be negative
-    Safety_rating VARCHAR(3) NOT NULL, -- the saftey rating will be a number between 5 and 0, with one dp. because calcuations will never be used, varchar is best 
+    Model_ID CHAR(12) PRIMARY KEY CHECK(REGEXP_LIKE(Model_ID,'\d{12}')), --char 12 is used, as we assume this bus will have a 12 digit long number to identify it
+    Capacity CHAR(2) NOT NULL CHECK(REGEXP_LIKE(Capacity,'\d{2}')) , -- the Capacity of the bus will  be a number between 10 and 99
+    Safety_rating CHAR(3) NOT NULL CHECK(REGEXP_LIKE(Safety_rating,'[0-5]\.\d{1}')) , -- the saftey rating will be a number between 5 and 0, with one dp. because calcuations will never be used, varchar is best 
     Make VARCHAR(64) NOT NULL, -- the make of the bus
     Brand VARCHAR(64) NOT NULL -- the brand of the bus
 );
 
-INSERT INTO bus_make VALUES ('124816321133',99,1.1,'big bus','ford');
-INSERT INTO bus_make VALUES ('222211113333',45,1.1,'small bus','holden');
+INSERT INTO bus_make VALUES ('148163211332','10','1.1','big bus','ford');
+INSERT INTO bus_make VALUES ('222211113333','45','1.1','small bus','holden');
 CREATE TABLE bus
 (
-    Number_plate VARCHAR(6) PRIMARY KEY,--Number plate has not fixed lenght and a max of 6 charaters
+    Number_plate VARCHAR(6) PRIMARY KEY ,--Number plate has not fixed lenght and a max of 6 charaters
     Fuel_costs DECIMAL(8,2) CHECK (Fuel_costs > 0) NOT NULL, -- can't be negative. costs could pile up so large upper bound is set
     Repair_costs DECIMAL(8,2) CHECK (Repair_costs > 0) NOT NULL, -- can't be negative. costs could pile up so large upper bound is set
-    Model_ID CHAR(12) NOT NULL,-- keep info on what model the bus is 
+    Model_ID CHAR(12) NOT NULL CHECK(REGEXP_LIKE(Model_ID,'\d{12}')),-- keep info on what model the bus is 
     CONSTRAINT fk_model FOREIGN KEY(Model_ID)
     REFERENCES bus_make(Model_ID)
 );
 
 INSERT INTO bus VALUES ('xxxsss',100.51,1000,'222211113333');
 INSERT INTO bus VALUES ('aaasss',105.51,10200,'222211113333');
-INSERT INTO bus VALUES ('xxsss',100.51,1000,'124816321133');
-INSERT INTO bus VALUES ('aasss',105.51,10200,'124816321133');
+INSERT INTO bus VALUES ('xxsss',100.51,1000,'148163211332');
+INSERT INTO bus VALUES ('aasss',105.51,10200,'148163211332');
 
 CREATE TABLE Condition
 (
@@ -225,7 +225,7 @@ INSERT INTO Condition VALUES ('aasss','ok','bad','good','bad');
 CREATE TABLE REGO-- is a composite attribute of bus
 (
     Number_plate VARCHAR(6) UNIQUE NOT NULL ,
-    ID CHAR(8) UNIQUE NOT NULL,
+    ID CHAR(8) UNIQUE NOT NULL CHECK(REGEXP_LIKE(ID,'\d{8}')),
     Due DATE NOT NULL,
     DONE DATE NOT NULL,
     CONSTRAINT pk_rego PRIMARY KEY(Number_plate,ID),
@@ -241,7 +241,7 @@ INSERT INTO REGO VALUES ('aasss','66677722',TO_DATE('28-12-2025','DD-MM-YYYY'),T
 CREATE TABLE WOF-- is a composite attribute of bus
 (
     Number_plate VARCHAR(6),
-    ID CHAR(8) UNIQUE NOT NULL,
+    ID CHAR(8) UNIQUE NOT NULL CHECK(REGEXP_LIKE(ID,'\d{8}')),
     Due DATE NOT NULL,
     DONE DATE NOT NULL,
     CONSTRAINT pk_wof PRIMARY KEY(Number_plate,ID),
@@ -256,7 +256,7 @@ INSERT INTO WOF VALUES ('aasss','99922211',TO_DATE('28-12-2025','DD-MM-YYYY'),TO
 
 Create TABLE ROUTE
 (
-    Route_number varchar(2) PRIMARY KEY,
+    Route_number varchar(2) PRIMARY KEY CHECK(REGEXP_LIKE(Route_number,'[0-9]+$')),
     colour varchar(16) NOT NULL UNIQUE
 );
 
