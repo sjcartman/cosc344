@@ -295,9 +295,9 @@ CREATE TABLE trip (
   card_number CHAR (9), -- may be null because the trip may have been paid in cash
   number_plate VARCHAR (6) NOT NULL,
   employee_id INT NOT NULL,
-  starts_at_stop INT NOT NULL,
-  ends_at_stop INT NOT NULL,
-  route_number INT NOT NULL
+  starts_at_stop VARCHAR (3) NOT NULL,
+  ends_at_stop VARCHAR (3) NOT NULL,
+  route_number VARCHAR (2) NOT NULL
 );
 
 -- Foreign key constraints for Cadence's tables
