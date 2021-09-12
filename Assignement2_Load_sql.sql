@@ -96,7 +96,7 @@ INSERT INTO roster VALUES (11234, 'Evening', 'Fri');
 -- Zone (modeled by Alysha)
 
 CREATE TABLE zone (
-  zone_number CHAR(1) PRIMARY KEY, --Zones are only for dunedin area so there would never need to be more than 9
+  zone_number CHAR(1) PRIMARY KEY CHECK(REGEXP_LIKE(zone_number,'[0-9]')), --Zones are only for dunedin area so there would never need to be more than 9 (dont need to do calculations so CHAR instead of INT)
   card_price  DECIMAL(4,2) NOT NULL,
   cash_price  DECIMAL(4,2) NOT NULL,
   zone_colour VARCHAR(10) NOT NULL UNIQUE
@@ -132,7 +132,7 @@ INSERT INTO zone_suburbs VALUES ('4', 'Airport');
 -- Stop (modeled by Alysha)
 
 CREATE TABLE stop (
-  stop_number 	varchar(3) PRIMARY KEY,
+  stop_number 	varchar(3) PRIMARY KEY CHECK(REGEXP_LIKE(stop_number, '[0-9]+$')), --Dont need to do calculations so opted for varchar over int
   address 	varchar(20) NOT NULL,
   shelter 	char(1) NOT NULL CHECK(shelter in('y','n')), --No boolean type
   bench 	char(1) NOT NULL CHECK(bench in('y','n')),
@@ -250,8 +250,8 @@ INSERT INTO route VALUES('3','yellow');
 
 -- Serviced By (modeled by Alysha)
 CREATE TABLE serviced_by (
-  S_Number      VARCHAR(3) NOT NULL REFERENCES stop (stop_number),
-  R_Number      VARCHAR(2) NOT NULL REFERENCES route (route_number),
+  s_number      VARCHAR(3) NOT NULL REFERENCES stop (stop_number),
+  r_number      VARCHAR(2) NOT NULL REFERENCES route (route_number),
   time          VARCHAR(5) NOT NULL, --No datatype for just time, dont need date as the times are the same every day
   PRIMARY KEY(s_number, r_number)
 );
