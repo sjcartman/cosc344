@@ -76,8 +76,8 @@ INSERT INTO driving_route_log VALUES (11234, TO_DATE('31-12-2020','DD-MM-YYYY'),
 
 CREATE TABLE roster (
   employee_id INT REFERENCES employee (employee_id),
-  shift VARCHAR (7),
-  day_of_the_week​ VARCHAR (3)
+  shift VARCHAR (7) NOT NULL,
+  day_of_the_week​ VARCHAR (3) NOT NULL
 );
 
 INSERT INTO roster VALUES (12345, 'Morning', 'Mon');
